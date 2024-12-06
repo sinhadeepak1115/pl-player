@@ -15,24 +15,7 @@ const Appbar = () => {
         >
           PL-Player
         </Link>
-        <ul className="flex space-x-6">
-          <li>
-            <Link
-              href="/workout"
-              className="text-white text-xl font-medium hover:text-blue-50"
-            >
-              Workout
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/report"
-              className="text-white text-xl font-medium hover:text-blue-50"
-            >
-              Reports
-            </Link>
-          </li>
-        </ul>
+
         {session.data?.user && (
           <Button onClick={() => signOut()}>Logout</Button>
         )}
