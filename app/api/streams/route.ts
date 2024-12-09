@@ -1,5 +1,6 @@
 import { prismaClient } from "@/lib/db";
-import e from "express";
+//@ts-ignore
+import youtubesearchapi from "youtube-search-api";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -19,7 +20,6 @@ export async function POST(req: NextRequest) {
       throw new Error("Request body is null or not an object");
     }
     const data = CreateStreamSchema.parse(body);
-    console.log(data);
     const isYt = data.url.match(YT_REGEX);
     if (!isYt) {
       return NextResponse.json(
@@ -31,12 +31,17 @@ export async function POST(req: NextRequest) {
     }
 
     const extractedUrl = body.url.split("?v=")[1];
+    const res = await youtubesearchapi.GetVideoDetails(extractedUrl);
 
     const stream = await prismaClient.stream.create({
       data: {
         userId: data.creatorId,
         url: data.url,
         extractedUrl,
+        title: res.title ?? "You are palying a video",
+        smallImg: res.thumbnail.thumbnails[3].url ?? "dmg.png",
+        bigImg: res.thumbnail.thumbnails[4].url ?? "dmg.png",
+        author: res.channel,
         type: "YouTube",
       },
     });
